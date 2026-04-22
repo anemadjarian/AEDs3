@@ -3,6 +3,7 @@ package entidades.Curso;
 import aed3.InterfaceEntidade;
 import java.io.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Random;
 
 public class Curso implements InterfaceEntidade {
@@ -130,6 +131,12 @@ public class Curso implements InterfaceEntidade {
         codigo = dis.readUTF();
         estado = dis.readInt();
     }
+
+    //Métodos pra Ane implementar
+    
+    public Curso buscarPorCodigo(String codigo){}
+
+    public ArrayList<Curso> readAll(){}
 
     @Override
     public String toString() {
