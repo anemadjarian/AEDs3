@@ -1,8 +1,7 @@
 package entidades.Usuario;
 
-import java.io.*;
-
 import aed3.InterfaceEntidade;
+import java.io.*;
 
 public class Usuario implements InterfaceEntidade {
     private int idUsuario;

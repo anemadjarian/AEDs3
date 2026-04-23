@@ -96,4 +96,41 @@ public class ArquivoCurso extends Arquivo<Curso> {
             delete(curso.getID());
         }
     }
+
+    public Curso buscarPorCodigo(String codigo) throws Exception {
+        int id = 0;
+        Curso c;
+
+        while ((c = super.read(id++)) != null) {
+            if (c.getCodigo().equals(codigo)) {
+                return c;
+            }
+        }
+
+        return null;
+    }
+    
+    //Ler todos para ordenar
+    public ArrayList<Curso> readAll() throws Exception {
+        ArrayList<Curso> lista = new ArrayList<>();
+
+        int id = 0;
+        Curso c;
+
+        while ((c = super.read(id++)) != null) {
+            lista.add(c);
+        }
+
+        return lista;
+    }
+
+    //Ordena por data
+    public ArrayList<Curso> readAllOrdenadoPorData() throws Exception {
+        ArrayList<Curso> lista = readAll();
+
+        lista.sort((c1, c2) -> c1.getInicio().compareTo(c2.getInicio()));
+
+        return lista;
+    }
+
 }
