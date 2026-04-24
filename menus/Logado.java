@@ -60,7 +60,7 @@ public class Logado {
 
             // minhas inscrições
             else if (opcao == 'C') {
-                System.out.println("Funcionalidade ainda não implementada.");
+                Inscricao.menu(user); //vai para o menu de inscrições
             }
 
             else if(opcao == 'D') {
