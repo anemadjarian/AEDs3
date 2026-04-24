@@ -60,6 +60,8 @@ public class ListaCursos {
 
             String opcao = sc.next().toUpperCase();
 
+            //Opções da Ane -> ir para próxima página ou voltar
+
             if (opcao.equals("A")) {
                 if (pagina > 0) {
                     pagina--;
@@ -77,7 +79,28 @@ public class ListaCursos {
             } else if (opcao.equals("R")) {
                 break;
 
-            } else {
+            } 
+
+            //Opção da Camila -> ver detalhes de um curso
+
+            else if (opcao.matches("\\d+")) { //se opção for um número
+                int escolha = Integer.parseInt(opcao);
+                int qtdNaPagina = fim - inicio;
+
+                if (escolha >= 1 && escolha <= qtdNaPagina) {
+                    Curso cursoSelecionado = lista.get(inicio + escolha - 1);
+
+                    // chama o menu de detalhes
+                    try {
+                        DetalheCurso.menu(cursoSelecionado, user);
+                    } catch (Exception e) {
+                        System.out.println("Erro ao abrir o curso.");
+                        e.printStackTrace();
+                    }
+                }
+            }
+            
+            else {
                 System.out.println("Opção inválida.");
             }
         }

@@ -131,8 +131,6 @@ public class Curso implements InterfaceEntidade {
         estado = dis.readInt();
     }
 
-    //Métodos pra Ane implementar (no arquivoCurso.java)
-
     @Override
     public String toString() {
         return "\nID: " + idCurso +
