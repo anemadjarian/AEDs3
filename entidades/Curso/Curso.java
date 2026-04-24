@@ -131,6 +131,17 @@ public class Curso implements InterfaceEntidade {
         estado = dis.readInt();
     }
 
+    //transformar os cases do estado para a mensagem a ser exibida
+    public String getEstadoString() {
+    switch (estado) {
+        case 0: return "";
+        case 1: return "INSCRIÇÕES ENCERRADAS";
+        case 2: return "CURSO CONCLUÍDO";
+        case 3: return "CURSO CANCELADO";
+        default: return "";
+    }
+}
+
     @Override
     public String toString() {
         return "\nID: " + idCurso +

@@ -39,11 +39,21 @@ public class ListaCursos {
 
             for (int i = inicio; i < fim; i++) {
                 Curso c = lista.get(i);
-
                 String numero = String.valueOf(cont); // Numero do curso
 
-                //Print certo
-                System.out.println("(" + numero + ") " + c.getNome() + " - " + c.getInicio().format(formato));
+                //Print certo com estado
+                String estadoCurso = c.getEstadoString(); // Estado do curso
+
+                if (!estadoCurso.isEmpty()) {
+                    System.out.println("(" + numero + ") " + c.getNome() + " - " +
+                        c.getInicio().format(formato) + " (" + estadoCurso + ")");
+                } else {
+                    System.out.println("(" + numero + ") " + c.getNome() + " - " +
+                        c.getInicio().format(formato));
+                }
+
+                //Print certo inicial
+                //System.out.println("(" + numero + ") " + c.getNome() + " - " + c.getInicio().format(formato));
 
                 //Print com código
                 /*System.out.println("(" + cont + ") " + c.getNome() + " - " + c.getInicio().format(formato)+ " | Código: " + c.getCodigo());*/
