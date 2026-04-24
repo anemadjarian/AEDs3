@@ -98,11 +98,11 @@ public class ArquivoCurso extends Arquivo<Curso> {
     }
 
     public Curso buscarPorCodigo(String codigo) throws Exception {
-        int id = 0;
-        Curso c;
 
-        while ((c = super.read(id++)) != null) {
-            if (c.getCodigo().equals(codigo)) {
+        for (int id = 0; id < 1000; id++) {
+            Curso c = super.read(id);
+
+            if (c != null && c.getCodigo() != null && c.getCodigo().equals(codigo)) {
                 return c;
             }
         }
@@ -114,11 +114,11 @@ public class ArquivoCurso extends Arquivo<Curso> {
     public ArrayList<Curso> readAll() throws Exception {
         ArrayList<Curso> lista = new ArrayList<>();
 
-        int id = 0;
-        Curso c;
-
-        while ((c = super.read(id++)) != null) {
-            lista.add(c);
+        for (int id = 0; id < 1000; id++) {
+            Curso c = super.read(id);
+            if (c != null) {
+                lista.add(c);
+            }
         }
 
         return lista;
@@ -128,7 +128,11 @@ public class ArquivoCurso extends Arquivo<Curso> {
     public ArrayList<Curso> readAllOrdenadoPorData() throws Exception {
         ArrayList<Curso> lista = readAll();
 
-        lista.sort((c1, c2) -> c1.getInicio().compareTo(c2.getInicio()));
+        lista.sort((c1, c2) -> {
+            if (c1.getInicio() == null) return 1;
+            if (c2.getInicio() == null) return -1;
+            return c1.getInicio().compareTo(c2.getInicio());
+        });
 
         return lista;
     }

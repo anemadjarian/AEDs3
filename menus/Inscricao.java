@@ -1,10 +1,10 @@
 package menus;
 
+import entidades.Curso.ArquivoCurso;
+import entidades.Curso.Curso;
 import entidades.Usuario.ArquivoUsuario;
 import entidades.Usuario.Usuario;
-import entidades.Curso.Curso;
-import entidades.Curso.ArquivoCurso;
-
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Inscricao {
@@ -73,6 +73,7 @@ public class Inscricao {
 
                 if (c != null) {
                     //chama menu de detalhes do curso
+                    
                     DetalheCurso.menu(c, user);
                 } else {
                     System.out.println("Curso não encontrado.");
@@ -96,7 +97,7 @@ public class Inscricao {
             else if (opcao == 'C') {
 
                 //busca todos os cursos
-                var lista = arqCurso.readAll();
+                ArrayList<Curso> lista = arqCurso.readAllOrdenadoPorData();
 
                 //chama o mini menu paginado
                 ListaCursos.menu(lista, user);

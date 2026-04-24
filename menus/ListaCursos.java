@@ -20,62 +20,66 @@ public class ListaCursos {
         int porPagina = 10;
         int totalPaginas = (int) Math.ceil((double) lista.size() / porPagina);
 
-        //Formatar data
         DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-        //Header
-        System.out.println("EntrePares 1.0");
-        System.out.println("--------------");
-        System.out.println("> Início > Minhas inscrições > Lista de cursos");
-        System.out.println();
-        System.out.println("Página " + (pagina + 1) + " de " + totalPaginas);
-        System.out.println();
+        while (true) {
 
-        int inicio = pagina * porPagina;
-        int fim = Math.min(inicio + porPagina, lista.size());
-        int cont = 1;
-        String numero;
+            // HEADER
+            System.out.println("EntrePares 1.0");
+            System.out.println("--------------");
+            System.out.println("> Início > Minhas inscrições > Lista de cursos");
+            System.out.println();
+            System.out.println("Página " + (pagina + 1) + " de " + totalPaginas);
+            System.out.println();
 
-        for (int i = inicio; i < fim; i++) {
-            Curso c = lista.get(i);
+            int inicio = pagina * porPagina;
+            int fim = Math.min(inicio + porPagina, lista.size());
 
-            if (cont == 10) {
-                numero = "0";
-            } else {
-                numero = String.valueOf(cont);
+            int cont = 1;
+
+            for (int i = inicio; i < fim; i++) {
+                Curso c = lista.get(i);
+
+                String numero = String.valueOf(cont); // Numero do curso
+
+                //Print certo
+                System.out.println("(" + numero + ") " + c.getNome() + " - " + c.getInicio().format(formato));
+
+                //Print com código
+                /*System.out.println("(" + cont + ") " + c.getNome() + " - " + c.getInicio().format(formato)+ " | Código: " + c.getCodigo());*/
+
+                cont++;
             }
 
-            System.out.println("(" + numero + ") " + c.getNome() + " - " + c.getInicio().format(formato));
+            //OPÇÕES
+            System.out.println();
+            System.out.println("(A) Página anterior");
+            System.out.println("(B) Próxima página");
+            System.out.println("(R) Retornar ao menu anterior");
+            System.out.print("Opção: ");
 
-            cont++;
-        }
+            String opcao = sc.next().toUpperCase();
 
-        System.out.println("(A) Página anterior");
-        System.out.println("(B) Próxima página");
-        System.out.println("(R) Retornar ao menu anterior");
-        System.out.print("Opção: ");
+            if (opcao.equals("A")) {
+                if (pagina > 0) {
+                    pagina--;
+                } else {
+                    System.out.println("Você já está na primeira página.");
+                }
 
-        String opcao = sc.next();
+            } else if (opcao.equals("B")) {
+                if (pagina < totalPaginas - 1) {
+                    pagina++;
+                } else {
+                    System.out.println("Você já está na última página.");
+                }
 
-        if (opcao.equals("A")) {
-            if (pagina > 0) {
-                pagina--;
+            } else if (opcao.equals("R")) {
+                break;
+
             } else {
-                System.out.println("Você já está na primeira página.");
+                System.out.println("Opção inválida.");
             }
-
-        } else if (opcao.equals("B")) {
-            if (pagina < totalPaginas - 1) {
-                pagina++;
-            } else {
-                System.out.println("Você já está na última página.");
-            }
-
-        } else if (opcao.equals("R")) {
-            return;
-
-        } else {
-            System.out.println("Opção inválida.");
         }
     }
 }
