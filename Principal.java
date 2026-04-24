@@ -1,8 +1,8 @@
 import entidades.Usuario.ArquivoUsuario;
 import entidades.Usuario.Usuario;
+import menus.Logado;
+
 import java.util.*;
-import src.menus.Logado;
-//import entidades.Curso;
 
 public class Principal {
     public static void main(String[] args)  throws Exception{

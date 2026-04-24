@@ -1,4 +1,4 @@
-package src.menus;
+package menus;
 
 import entidades.Curso.Curso;
 import entidades.Usuario.Usuario;

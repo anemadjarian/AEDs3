@@ -1,4 +1,4 @@
-package src.menus;
+package menus;
 
 import entidades.Usuario.ArquivoUsuario;
 import entidades.Usuario.Usuario;
