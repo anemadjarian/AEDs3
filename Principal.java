@@ -105,7 +105,7 @@ public class Principal {
                 }
                 
 
-            if (desejo == 'S') {
+                if (desejo == 'S') {
                     Usuario novo = new Usuario(
                         0,
                         nome,

@@ -1,7 +1,9 @@
 package menus;
 
+import entidades.Curso.ArquivoCurso;
 import entidades.Curso.Curso;
 import entidades.Usuario.Usuario;
+import entidades.Usuario.ArquivoUsuario;
 
 import java.util.Scanner;
 
@@ -9,6 +11,8 @@ public class DetalheCurso {
 
     public static void menu(Curso c, Usuario user) throws Exception {
         Scanner sc = new Scanner(System.in);
+        ArquivoUsuario arqUsuario = new ArquivoUsuario();
+        ArquivoCurso arquivoCurso = new ArquivoCurso();
 
         int s = 0;
         String aux = "";
@@ -52,11 +56,24 @@ public class DetalheCurso {
             // fazer inscrição
             else if (opcao == 'A') {
 
-                //por enquanto só mensagem (lógica vem depois)
-                System.out.println();
-                System.out.println("Inscrição realizada com sucesso! (implementar depois)");
-                System.out.println();
-
+                if(c.getEstadoString() == "") {//se tiver aceitando inscrições
+                    if(user.isInscrito(c.getIdCurso()) && c.isInscrito(user.getID())) { //verificar se já está inscrito
+                        System.out.println("Você já está inscrito neste curso.");
+                    } else { // caso contrário, inscrever
+                        user.add(c.getIdCurso());
+                        c.add(user.getID()); 
+                        try {
+                            arqUsuario.update(user);
+                            arquivoCurso.update(c);
+                            System.out.println("Inscrição realizada com sucesso!");
+                        } catch (Exception e) {
+                            // TODO: handle exception
+                        }
+                    }
+                    
+                }else{ //caso não esteja aceitando inscrições
+                    System.out.println(c.getEstadoString());
+                }
                 System.out.println("Pressione Enter para continuar...");
                 sc.nextLine();
             }
