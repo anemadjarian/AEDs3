@@ -1,5 +1,4 @@
-import entidades.Usuario.ArquivoUsuario;
-import entidades.Usuario.Usuario;
+import entidades.Usuario.*;
 import menus.Logado;
 
 import java.util.*;
@@ -161,6 +160,6 @@ public class Principal {
                 }
             }
         }
-        
+        sc.close();
     }
 }

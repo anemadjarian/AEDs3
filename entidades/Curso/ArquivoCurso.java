@@ -1,16 +1,20 @@
 package entidades.Curso;
 import aed3.*;
+import entidades.CursoUsuario.ArquivoCursoUsuario;
+
+import java.io.RandomAccessFile;
 import java.util.ArrayList;
 
 public class ArquivoCurso extends Arquivo<Curso> {
     private final int TAM_CABECALHO = 4;
+    RandomAccessFile arq;
 
     ArvoreBMais<ParIdId> relacionamentoUsuarioCurso;
     ArvoreBMais<ParNomeId> indiceNome;
-    
+
     public ArquivoCurso() throws Exception {
         super("curso", Curso.class.getConstructor());
-
+        arq = new RandomAccessFile("./dados/curso/dado.db", "rw");
         relacionamentoUsuarioCurso = new ArvoreBMais<>(ParIdId.class.getConstructor(), TAM_CABECALHO, "./dados/curso/relacionamentoUsuarioCurso.db");
         indiceNome = new ArvoreBMais<>(ParNomeId.class.getConstructor(), TAM_CABECALHO, "./dados/curso/indiceNome.db");
     }
@@ -23,6 +27,45 @@ public class ArquivoCurso extends Arquivo<Curso> {
         return id;
     }
 
+    //procura um curso sequencialmente utilizando o id (nao esta funcionando)
+    public Curso findCursoPorId(int id) throws Exception {
+        arq.seek(TAM_CABECALHO);
+        while (arq.getFilePointer() < arq.length()) {
+            byte lapide = arq.readByte();
+            short tam = arq.readShort();
+
+            if (lapide != '*') {
+                byte[] ba = new byte[tam];
+                arq.readFully(ba);
+                Curso c = new Curso();
+                c.fromByteArray(ba);
+
+                if (c.getIdCurso() == id) {
+                    return c;
+                }
+            } else {
+                arq.skipBytes(tam);
+            }
+        }
+        return null;        
+    }
+
+    //encontra todos os cursos que um usuario se inscreveu baseado no id
+    public Curso[] readCursosUsuario(int idUsuario) throws Exception {
+        ArquivoCursoUsuario arquivoCursoUsuario = new ArquivoCursoUsuario();
+        ArrayList<Integer> idsCursos = arquivoCursoUsuario.readAllIdByIdUsuario(idUsuario);
+        Curso[] cursos = new Curso[idsCursos.size()];
+        for(int i = 0; i < idsCursos.size(); i++ ){
+            Curso c = super.read(idsCursos.get(i));
+            if(c != null) {
+                cursos[i] = c;
+            }
+        }
+        
+        return cursos;
+    }
+
+    //encontra todos os cursos que um usuario disponibilizou
     public Curso[] readCursosPorUsuario(int idUsuario) throws Exception {
         ArrayList<ParIdId> piis = relacionamentoUsuarioCurso.read(new ParIdId(idUsuario, -1));
         

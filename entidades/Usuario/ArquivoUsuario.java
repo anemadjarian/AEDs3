@@ -16,7 +16,8 @@ public class ArquivoUsuario extends Arquivo<Usuario> {
             ParEmailId.class.getConstructor(), 
             TAM_CABECALHO,
             "./dados/usuario/indiceEmail.d.db",
-            "./dados/usuario/indiceEmail.c.db");
+            "./dados/usuario/indiceEmail.c.db"
+        );
 
      
     }

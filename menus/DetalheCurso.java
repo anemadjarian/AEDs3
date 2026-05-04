@@ -1,9 +1,9 @@
 package menus;
 
-import entidades.Curso.ArquivoCurso;
 import entidades.Curso.Curso;
+import entidades.CursoUsuario.ArquivoCursoUsuario;
+import entidades.CursoUsuario.CursoUsuario;
 import entidades.Usuario.Usuario;
-import entidades.Usuario.ArquivoUsuario;
 
 import java.util.Scanner;
 
@@ -11,8 +11,7 @@ public class DetalheCurso {
 
     public static void menu(Curso c, Usuario user) throws Exception {
         Scanner sc = new Scanner(System.in);
-        ArquivoUsuario arqUsuario = new ArquivoUsuario();
-        ArquivoCurso arquivoCurso = new ArquivoCurso();
+        ArquivoCursoUsuario arquivoCursoUsuario = new ArquivoCursoUsuario();
 
         int s = 0;
         String aux = "";
@@ -56,22 +55,27 @@ public class DetalheCurso {
             // fazer inscrição
             else if (opcao == 'A') {
 
-                if(c.getEstadoString() == "") {//se tiver aceitando inscrições
-                    if(user.isInscrito(c.getIdCurso()) && c.isInscrito(user.getID())) { //verificar se já está inscrito
+                //se tiver aceitando inscrições
+                if(c.getEstadoString() == "") {
+
+                    //verificar se já está inscrito
+                    if(arquivoCursoUsuario.isInscrito(user.getID(), c.getIdCurso())) { 
                         System.out.println("Você já está inscrito neste curso.");
-                    } else { // caso contrário, inscrever
-                        user.add(c.getIdCurso());
-                        c.add(user.getID()); 
+
+                    // caso contrário, inscrever
+                    } else { 
                         try {
-                            arqUsuario.update(user);
-                            arquivoCurso.update(c);
+                            //Cria um novo curso usuário e salva no arquivo
+                            CursoUsuario cursoUsuario = new CursoUsuario(0, c.getIdCurso(), user.getID(), java.time.LocalDate.now());
+                            arquivoCursoUsuario.create(cursoUsuario);
                             System.out.println("Inscrição realizada com sucesso!");
                         } catch (Exception e) {
                             // TODO: handle exception
                         }
                     }
                     
-                }else{ //caso não esteja aceitando inscrições
+                //caso não esteja aceitando inscrições    
+                }else{ 
                     System.out.println(c.getEstadoString());
                 }
                 System.out.println("Pressione Enter para continuar...");
@@ -79,6 +83,54 @@ public class DetalheCurso {
             }
 
             else {
+                System.out.println("Opção inválida.");
+                System.out.println("Pressione Enter para continuar...");
+                sc.nextLine();
+            }
+        }
+    }
+
+
+    public static void menu2(Curso c) throws Exception {
+        Scanner sc = new Scanner(System.in);
+
+        int s = 0;
+        String aux = "";
+        char opcao;
+
+        //APENAS PARA VISUALIZAÇÃO DE CURSO, SEM OPÇÃO DE INSCRIÇÃO
+        while (s == 0) {
+
+            System.out.println("EntrePares 1.0");
+            System.out.println("--------------");
+            System.out.println("> Início > Minhas inscrições > Lista de cursos > " + c.getNome());
+            System.out.println();
+
+            System.out.println("CÓDIGO........: " + c.getCodigo());
+            System.out.println("CURSO.........: " + c.getNome());
+
+            //autor (por enquanto placeholder)
+            System.out.println("AUTOR.........: " + c.getIdUsuario());
+
+            System.out.println("DESCRIÇÃO.....: " + c.getDescricao());
+            System.out.println("DATA DE INÍCIO: " + c.getInicio());
+            System.out.println();
+
+            System.out.println("(R) Retornar ao menu anterior");
+            System.out.println();
+
+            System.out.print("Opção: ");
+            aux = sc.nextLine();
+
+            if (aux.length() == 0) continue;
+
+            opcao = Character.toUpperCase(aux.charAt(0));
+
+            // voltar
+            if (opcao == 'R') {
+                s = 1;
+                break;
+            }else {
                 System.out.println("Opção inválida.");
                 System.out.println("Pressione Enter para continuar...");
                 sc.nextLine();

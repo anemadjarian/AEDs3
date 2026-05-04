@@ -1,6 +1,7 @@
 package entidades.CursoUsuario;
 
 import java.time.LocalDate;
+
 import java.io.*;
 
 public class CursoUsuario {
@@ -10,7 +11,9 @@ public class CursoUsuario {
     private int idUsuario;
     private LocalDate dataInscricao;
 
-    public CursoUsuario() {}
+    public CursoUsuario() {
+
+    }
 
     public CursoUsuario(int idCursoUsuario, int idCurso, int idUsuario, LocalDate dataInscricao) {
         this.idCursoUsuario = idCursoUsuario;
@@ -21,19 +24,39 @@ public class CursoUsuario {
 
     // GETTERS E SETTERS
 
-    public int getIdCursoUsuario() { return idCursoUsuario; }
-    public void setIdCursoUsuario(int id) { this.idCursoUsuario = id; }
+    public int getIdCursoUsuario() { 
+        return idCursoUsuario; 
+    }
+    
+    public void setIdCursoUsuario(int id) { 
+        this.idCursoUsuario = id; 
+    }
 
-    public int getIdCurso() { return idCurso; }
-    public void setIdCurso(int idCurso) { this.idCurso = idCurso; }
+    public int getIdCurso() { 
+        return idCurso; 
+    }
+    
+    public void setIdCurso(int idCurso) { 
+        this.idCurso = idCurso; 
+    }
 
-    public int getIdUsuario() { return idUsuario; }
-    public void setIdUsuario(int idUsuario) { this.idUsuario = idUsuario; }
+    public int getIdUsuario() { 
+        return idUsuario; 
+    }
 
-    public LocalDate getDataInscricao() { return dataInscricao; }
-    public void setDataInscricao(LocalDate data) { this.dataInscricao = data; }
+    public void setIdUsuario(int idUsuario) { 
+        this.idUsuario = idUsuario; 
+    }
 
-        public byte[] toByteArray() throws IOException {
+    public LocalDate getDataInscricao() { 
+        return dataInscricao; 
+    }
+
+    public void setDataInscricao(LocalDate data) { 
+        this.dataInscricao = data; 
+    }
+
+    public byte[] toByteArray() throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         DataOutputStream dos = new DataOutputStream(baos);
 

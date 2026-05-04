@@ -2,7 +2,6 @@ package entidades.Usuario;
 
 import aed3.InterfaceEntidade;
 import java.io.*;
-import java.util.ArrayList;
 
 public class Usuario implements InterfaceEntidade {
     private int idUsuario;
@@ -11,7 +10,6 @@ public class Usuario implements InterfaceEntidade {
     private String hashSenha;
     private String perguntaSecreta;
     private String hashRespostaSecreta;
-    private ArrayList<Integer> idCursos;
     
     public Usuario() {
     }
@@ -23,11 +21,6 @@ public class Usuario implements InterfaceEntidade {
         this.hashSenha = hashSenha;
         this.perguntaSecreta = perguntaSecreta;
         this.hashRespostaSecreta = hashRespostaSecreta;
-        this.idCursos = new ArrayList<>();
-    }
-
-    public ArrayList<Integer> getCursosInscritos() {
-        return idCursos;
     }
 
     public int getIdUsuario() {
@@ -97,16 +90,6 @@ public class Usuario implements InterfaceEntidade {
         return Integer.toString(texto.hashCode());
     }
 
-    public boolean isInscrito(int idCurso) {
-        return idCursos.contains(idCurso);
-    }
-
-    public void add(int idCurso) {
-        if(!idCursos.contains(idCurso)) {
-            idCursos.add(idCurso);
-        }
-    }
-
     // serialização
     public byte[] toByteArray() throws IOException {
         ByteArrayOutputStream ba = new ByteArrayOutputStream();
@@ -118,14 +101,6 @@ public class Usuario implements InterfaceEntidade {
         dos.writeUTF(hashSenha);
         dos.writeUTF(perguntaSecreta);
         dos.writeUTF(hashRespostaSecreta);
-        if(idCursos != null) {
-            dos.writeInt(idCursos.size());
-            for(Integer id : idCursos) {
-                dos.writeInt(id);
-            }
-        } else {
-            dos.writeInt(0);
-        }
 
         return ba.toByteArray();
     }
@@ -140,10 +115,5 @@ public class Usuario implements InterfaceEntidade {
         hashSenha = dis.readUTF();
         perguntaSecreta = dis.readUTF();
         hashRespostaSecreta = dis.readUTF();
-        int qtd = dis.readInt();
-        this.idCursos = new ArrayList<>();
-        for(int i = 0; i < qtd; i++) {
-            this.idCursos.add(dis.readInt());
-        }
     }
 }

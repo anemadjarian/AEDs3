@@ -3,7 +3,6 @@ package entidades.Curso;
 import aed3.InterfaceEntidade;
 import java.io.*;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Random;
 
 public class Curso implements InterfaceEntidade {
@@ -15,7 +14,6 @@ public class Curso implements InterfaceEntidade {
     private LocalDate inicio;
     private String codigo;
     private int estado;
-    private ArrayList<Integer> usersId;
 
     public Curso() {
     }
@@ -27,7 +25,6 @@ public class Curso implements InterfaceEntidade {
         this.inicio = inicio;
         this.estado = estado;
         this.codigo = gerarCodigo(); // gera automaticamente
-        this.usersId = new ArrayList<>();
     }
 
     // 🔹 Geração do código estilo NanoID (10 caracteres)
@@ -45,10 +42,6 @@ public class Curso implements InterfaceEntidade {
     }
 
     // GETTERS E SETTERS
-
-    public ArrayList<Integer> getUsersId() {
-        return usersId;
-    }
 
     public int getIdCurso() {
         return idCurso;
@@ -110,19 +103,6 @@ public class Curso implements InterfaceEntidade {
         this.idCurso = id;
     }
 
-    public boolean isInscrito(int userId) {
-        return usersId != null && usersId.contains(userId);
-    }
-
-    public void add(int userId) {
-        if(usersId == null) {
-            usersId = new ArrayList<>();
-        }
-        if(!usersId.contains(userId)) {
-            usersId.add(userId);
-        }
-    }
-
     public byte[] toByteArray() throws IOException {
         ByteArrayOutputStream ba = new ByteArrayOutputStream();
         DataOutputStream dos = new DataOutputStream(ba);
@@ -134,14 +114,6 @@ public class Curso implements InterfaceEntidade {
         dos.writeUTF(inicio.toString());
         dos.writeUTF(codigo);
         dos.writeInt(estado);
-        if(usersId != null) {
-            dos.writeInt(usersId.size());
-            for(Integer id : usersId) {
-                dos.writeInt(id);
-            }
-        } else {
-            dos.writeInt(0); // sem inscritos
-        }
 
         return ba.toByteArray();
     }
@@ -157,11 +129,6 @@ public class Curso implements InterfaceEntidade {
         inicio = LocalDate.parse(dis.readUTF());
         codigo = dis.readUTF();
         estado = dis.readInt();
-        int qtd = dis.readInt();
-        this.usersId = new ArrayList<>();
-        for(int i = 0; i < qtd; i++) {
-            usersId.add(dis.readInt());
-        }
     }
 
     //transformar os cases do estado para a mensagem a ser exibida

@@ -9,13 +9,81 @@ public class ArquivoCursoUsuario {
     private final int TAM_CABECALHO = 4;
 
     public ArquivoCursoUsuario() throws Exception {
-        arq = new RandomAccessFile("cursoUsuario.db", "rw");
+        arq = new RandomAccessFile("./dados/cursoUsuario/cursoUsuario.db", "rw");
 
         if (arq.length() == 0) {
             arq.writeInt(0); // último ID
         }
     }
 
+    //SELECIONAR CURSOS DE UM USUÁRIO
+    public ArrayList<CursoUsuario> readAllByIdUsuario(int idUsuarioBuscado) throws Exception { 
+        ArrayList<CursoUsuario> listaCursosDoUsuario = new ArrayList<>();
+
+        arq.seek(TAM_CABECALHO);
+
+        while (arq.getFilePointer() < arq.length()) {
+            byte lapide = arq.readByte();
+            short tam = arq.readShort();
+
+            if (lapide != '*') { 
+                byte[] ba = new byte[tam];
+                arq.readFully(ba);
+
+                CursoUsuario cu = new CursoUsuario();
+                cu.fromByteArray(ba);
+
+                if (cu.getIdUsuario() == idUsuarioBuscado) { //armazena apenas os cursos do usuário
+                    listaCursosDoUsuario.add(cu);
+                }
+            } else {
+                arq.skipBytes(tam);
+            }
+        }
+
+        return listaCursosDoUsuario;
+    }
+
+    //SELECIONAR OS IDS DOS CURSOS DE UM USUÁRIO
+    public ArrayList<Integer> readAllIdByIdUsuario(int idUsuarioBuscado) throws Exception { 
+        ArrayList<Integer> listaCursosDoUsuario = new ArrayList<>();
+        arq.seek(TAM_CABECALHO);
+
+        while (arq.getFilePointer() < arq.length()) {
+            byte lapide = arq.readByte();
+            short tam = arq.readShort();
+
+            if (lapide != '*') { 
+                byte[] ba = new byte[tam];
+                arq.readFully(ba);
+
+                CursoUsuario cu = new CursoUsuario();
+                cu.fromByteArray(ba);
+
+                if (cu.getIdUsuario() == idUsuarioBuscado) { //armazena apenas os cursos do usuário
+                    listaCursosDoUsuario.add(cu.getIdCurso());
+                }
+            } else {
+                arq.skipBytes(tam);
+            }
+        }
+
+        return listaCursosDoUsuario;
+    }
+
+    //verificar se o usuário já está inscrito no curso
+    public boolean isInscrito(int idUsuarioBuscado, int idCursoBuscado) throws Exception {
+        ArrayList<CursoUsuario> listaCursosDoUsuario = readAllByIdUsuario(idUsuarioBuscado);
+        int tam = listaCursosDoUsuario.size();
+        for (int i = 0; i < tam; i++) {
+            CursoUsuario cu = listaCursosDoUsuario.get(i);
+            if (cu.getIdCurso() == idCursoBuscado) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
     //CREATE -> Fazer uma inscrição
 
     public int create(CursoUsuario cu) throws Exception {
@@ -38,6 +106,8 @@ public class ArquivoCursoUsuario {
 
         return novoID;
     }
+
+    
 
     //READ ALL
 

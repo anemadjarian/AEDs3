@@ -29,7 +29,15 @@ public class Logado {
             System.out.print("Opção: ");
             System.out.println();
 
+            aux = "";
             aux = sc.nextLine();
+            if(aux.length() == 0){
+                System.out.println("Digite algo");
+            }
+            while (aux.length() == 0){
+                aux = sc.nextLine();
+                System.out.println("Digite algo");
+            } 
             opcao = Character.toUpperCase(aux.charAt(0));
 
             // sair

@@ -2,7 +2,6 @@ package menus;
 
 import entidades.Curso.ArquivoCurso;
 import entidades.Curso.Curso;
-import entidades.Usuario.ArquivoUsuario;
 import entidades.Usuario.Usuario;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -14,9 +13,15 @@ public class Inscricao {
         return codigo != null && codigo.matches("[a-zA-Z0-9]{10}");
     }
 
+    public static int toInt(char c) {
+        if(c >= '0' && c <= '9') {
+            return c - '0';
+        }
+        return -1;
+    }
+
     public static void menu(Usuario user) throws Exception {
         Scanner sc = new Scanner(System.in);
-        ArquivoUsuario arqUser = new ArquivoUsuario();
         ArquivoCurso arqCurso = new ArquivoCurso();
 
         int s = 0;
@@ -28,9 +33,26 @@ public class Inscricao {
             System.out.println("----------");
             System.out.println("> Inicio > Inscrições");
             System.out.println();
-            System.out.println("Suas inscrições:");
+            
 
-            //listar inscrições do usuário (depois)
+            //listar inscrições do usuário
+            Curso[] minhasInscricoes = arqCurso.readCursosUsuario(user.getID());
+
+            // se não tiver inscrições
+            if (minhasInscricoes.length == 0) {  
+                System.out.println("Você ainda não está inscrito em nenhum curso.");
+                System.out.println("");
+
+            //se tiver inscrições, lista elas    
+            } else { 
+                System.out.println("Suas inscrições:");
+                for (int i = 0; i < minhasInscricoes.length; i++) {
+                    Curso c = minhasInscricoes[i];
+                    if(c != null)
+                        System.out.println("(" + (i + 1) + ") " + c.getNome() + " - " + c.getInicio());
+                }
+                System.out.println("");
+            }
 
             System.out.println("(A) Buscar curso por código");
             System.out.println("(B) Buscar curso por palavra-chave"); // tp03
@@ -101,8 +123,19 @@ public class Inscricao {
 
                 //chama o mini menu paginado
                 ListaCursos.menu(lista, user);
+
+            // detalhes de um curso específico da lista de inscrições
+            }else if (toInt(opcao) > 0 && toInt(opcao) <= minhasInscricoes.length) {
+                Curso c = minhasInscricoes[toInt(opcao)];
+                if(c != null) {
+                    //apenas detalhes do curso
+                    DetalheCurso.menu2(c);
+                } else {
+                    System.out.println("Opção inválida.");
+                }
             }
 
+            // opção inválida
             else {
                 System.out.println("Opção Inválida. Deseja tentar novamente? S/N");
                 char desejo = Character.toUpperCase(sc.nextLine().charAt(0));
