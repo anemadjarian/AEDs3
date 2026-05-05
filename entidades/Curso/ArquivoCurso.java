@@ -1,7 +1,7 @@
 package entidades.Curso;
 import aed3.*;
 import entidades.CursoUsuario.ArquivoCursoUsuario;
-
+import entidades.CursoUsuario.CursoUsuario;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
 
@@ -53,11 +53,13 @@ public class ArquivoCurso extends Arquivo<Curso> {
     //encontra todos os cursos que um usuario se inscreveu baseado no id
     public Curso[] readCursosUsuario(int idUsuario) throws Exception {
         ArquivoCursoUsuario arquivoCursoUsuario = new ArquivoCursoUsuario();
-        ArrayList<Integer> idsCursos = arquivoCursoUsuario.readAllIdByIdUsuario(idUsuario);
-        Curso[] cursos = new Curso[idsCursos.size()];
-        for(int i = 0; i < idsCursos.size(); i++ ){
-            Curso c = super.read(idsCursos.get(i));
-            if(c != null) {
+        ArrayList<CursoUsuario> lista = arquivoCursoUsuario.readAllByIdUsuario(idUsuario);
+
+        Curso[] cursos = new Curso[lista.size()];
+
+        for (int i = 0; i < lista.size(); i++) {
+            Curso c = super.read(lista.get(i).getIdCurso());
+            if (c != null) {
                 cursos[i] = c;
             }
         }

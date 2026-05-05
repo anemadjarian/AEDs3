@@ -1,74 +1,138 @@
 package entidades.CursoUsuario;
 
+import aed3.ArvoreBMais;
+import aed3.HashExtensivel;
+import aed3.ParIDEndereco;
+import aed3.ParIdId;
 import java.io.*;
 import java.util.ArrayList;
 
 public class ArquivoCursoUsuario {
 
+    private ArvoreBMais<ParIdId> idxUsuarioCurso;
+    private HashExtensivel<ParIDEndereco> idxDireto;
+    private ArvoreBMais<ParIdId> idxCursoUsuario;
+
     private RandomAccessFile arq;
     private final int TAM_CABECALHO = 4;
 
     public ArquivoCursoUsuario() throws Exception {
-        arq = new RandomAccessFile("./dados/cursoUsuario/cursoUsuario.db", "rw");
+        arq = new RandomAccessFile("./entidades/CursoUsuario/cursoUsuario.db", "rw");
 
         if (arq.length() == 0) {
             arq.writeInt(0); // último ID
         }
+
+        idxUsuarioCurso = new ArvoreBMais<>(
+            ParIdId.class.getConstructor(), 4, "./entidades/CursoUsuario/idxUsuarioCurso.db"
+        );
+
+        idxDireto = new HashExtensivel<>(
+            ParIDEndereco.class.getConstructor(), 4, "./entidades/CursoUsuario/idxUsuarioCurso.db", "./entidades/CursoUsuario/idxUsuarioCurso.db"
+        );
+
+        idxCursoUsuario = new ArvoreBMais<>(
+            ParIdId.class.getConstructor(), 4, "./entidades/CursoUsuario/idxUsuarioCurso.db"
+        );
+
+        if (idxUsuarioCurso.empty()) {
+            reconstruirIndice();
+        }
+    }
+
+    // Reconstrói todos os índices a partir do arquivo principal
+    private void reconstruirIndice() throws Exception {
+
+        arq.seek(TAM_CABECALHO);
+
+        while (arq.getFilePointer() < arq.length()) {
+
+            long pos = arq.getFilePointer(); 
+
+            byte lapide = arq.readByte();
+            short tam = arq.readShort();
+
+            byte[] ba = new byte[tam];
+            arq.readFully(ba);
+
+            if (lapide != '*') {
+                CursoUsuario cu = new CursoUsuario();
+                cu.fromByteArray(ba);
+
+                // índice B+
+                idxUsuarioCurso.create(
+                    new ParIdId(cu.getIdUsuario(), cu.getIdCursoUsuario())
+                );
+
+                // índice hash (direto)
+                idxDireto.create(
+                    new ParIDEndereco(cu.getIdCursoUsuario(), pos)
+                );
+
+                idxCursoUsuario.create(
+                    new ParIdId(cu.getIdCurso(), cu.getIdCursoUsuario())
+                );
+            }
+        }
     }
 
     //SELECIONAR CURSOS DE UM USUÁRIO
-    public ArrayList<CursoUsuario> readAllByIdUsuario(int idUsuarioBuscado) throws Exception { 
-        ArrayList<CursoUsuario> listaCursosDoUsuario = new ArrayList<>();
+    public CursoUsuario readById(int id) throws Exception {
 
-        arq.seek(TAM_CABECALHO);
+        ParIDEndereco pie = idxDireto.read(id);
 
-        while (arq.getFilePointer() < arq.length()) {
-            byte lapide = arq.readByte();
-            short tam = arq.readShort();
+        if (pie == null)
+            return null;
 
-            if (lapide != '*') { 
-                byte[] ba = new byte[tam];
-                arq.readFully(ba);
+        arq.seek(pie.getEndereco());
 
-                CursoUsuario cu = new CursoUsuario();
-                cu.fromByteArray(ba);
+        byte lapide = arq.readByte();
+        short tam = arq.readShort();
 
-                if (cu.getIdUsuario() == idUsuarioBuscado) { //armazena apenas os cursos do usuário
-                    listaCursosDoUsuario.add(cu);
-                }
-            } else {
-                arq.skipBytes(tam);
-            }
-        }
+        if (lapide == '*')
+            return null;
 
-        return listaCursosDoUsuario;
+        byte[] ba = new byte[tam];
+        arq.readFully(ba);
+
+        CursoUsuario cu = new CursoUsuario();
+        cu.fromByteArray(ba);
+
+        return cu;
     }
 
-    //SELECIONAR OS IDS DOS CURSOS DE UM USUÁRIO
-    public ArrayList<Integer> readAllIdByIdUsuario(int idUsuarioBuscado) throws Exception { 
-        ArrayList<Integer> listaCursosDoUsuario = new ArrayList<>();
-        arq.seek(TAM_CABECALHO);
+     // Retorna todas as inscrições de um determinado curso (usando árvore B+)
+    public ArrayList<CursoUsuario> readAllByIdCurso(int idCursoBuscado) throws Exception {
 
-        while (arq.getFilePointer() < arq.length()) {
-            byte lapide = arq.readByte();
-            short tam = arq.readShort();
+        ArrayList<CursoUsuario> listaFinal = new ArrayList<>();
 
-            if (lapide != '*') { 
-                byte[] ba = new byte[tam];
-                arq.readFully(ba);
+        ArrayList<ParIdId> lista =
+            idxCursoUsuario.read(new ParIdId(idCursoBuscado, -1));
 
-                CursoUsuario cu = new CursoUsuario();
-                cu.fromByteArray(ba);
-
-                if (cu.getIdUsuario() == idUsuarioBuscado) { //armazena apenas os cursos do usuário
-                    listaCursosDoUsuario.add(cu.getIdCurso());
-                }
-            } else {
-                arq.skipBytes(tam);
-            }
+        for (ParIdId p : lista) {
+            CursoUsuario cu = readById(p.getId2());
+            if (cu != null)
+                listaFinal.add(cu);
         }
 
-        return listaCursosDoUsuario;
+        return listaFinal;
+    }
+
+    // Retorna todas as inscrições de um determinado usuário (usando árvore B+)
+    public ArrayList<CursoUsuario> readAllByIdUsuario(int idUsuarioBuscado) throws Exception {
+
+        ArrayList<CursoUsuario> listaFinal = new ArrayList<>();
+
+        ArrayList<ParIdId> lista =
+            idxUsuarioCurso.read(new ParIdId(idUsuarioBuscado, -1));
+
+        for (ParIdId p : lista) {
+            CursoUsuario cu = readById(p.getId2());
+            if (cu != null)
+                listaFinal.add(cu);
+        }
+
+        return listaFinal;
     }
 
     //verificar se o usuário já está inscrito no curso
@@ -88,7 +152,7 @@ public class ArquivoCursoUsuario {
 
     public int create(CursoUsuario cu) throws Exception {
 
-        arq.seek(0);
+         arq.seek(0);
         int ultimoID = arq.readInt();
         int novoID = ultimoID + 1;
 
@@ -97,17 +161,32 @@ public class ArquivoCursoUsuario {
         arq.seek(0);
         arq.writeInt(novoID);
 
+        // posição do registro
         arq.seek(arq.length());
+        long pos = arq.getFilePointer();
+
         byte[] ba = cu.toByteArray();
 
         arq.writeByte(' ');
         arq.writeShort(ba.length);
         arq.write(ba);
 
+        // índice B+
+        idxUsuarioCurso.create(
+            new ParIdId(cu.getIdUsuario(), novoID)
+        );
+        idxCursoUsuario.create(
+            new ParIdId(cu.getIdCurso(), novoID)
+        );
+
+        // índice hash
+        idxDireto.create(
+            new ParIDEndereco(novoID, pos)
+        );
+
         return novoID;
     }
 
-    
 
     //READ ALL
 
@@ -139,29 +218,43 @@ public class ArquivoCursoUsuario {
     //Delete -> cancelar a inscrição
     public boolean delete(int id) throws Exception {
 
-        arq.seek(TAM_CABECALHO);
+        ParIDEndereco pie = idxDireto.read(id);
 
-        while (arq.getFilePointer() < arq.length()) {
-            long pos = arq.getFilePointer();
-
-            byte lapide = arq.readByte();
-            short tam = arq.readShort();
-
-            byte[] ba = new byte[tam];
-            arq.readFully(ba);
-
-            if (lapide != '*') {
-                CursoUsuario cu = new CursoUsuario();
-                cu.fromByteArray(ba);
-
-                if (cu.getIdCursoUsuario() == id) {
-                    arq.seek(pos);
-                    arq.writeByte('*');
-                    return true;
-                }
-            }
-        }
-
+    if (pie == null)
         return false;
+
+        long pos = pie.getEndereco();
+
+        arq.seek(pos);
+
+        byte lapide = arq.readByte();
+        short tam = arq.readShort();
+
+        if (lapide == '*')
+            return false;
+
+        byte[] ba = new byte[tam];
+        arq.readFully(ba);
+
+        CursoUsuario cu = new CursoUsuario();
+        cu.fromByteArray(ba);
+
+        // remove dos índices
+        idxUsuarioCurso.delete(
+            new ParIdId(cu.getIdUsuario(), cu.getIdCursoUsuario())
+        );
+
+        idxCursoUsuario.delete(
+            new ParIdId(cu.getIdCurso(), cu.getIdCursoUsuario())
+        );
+
+        idxDireto.delete(cu.getIdCursoUsuario());
+
+        // marca como deletado
+        arq.seek(pos);
+        arq.writeByte('*');
+
+        return true;
+
     }
 }
