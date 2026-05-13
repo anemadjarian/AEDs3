@@ -1,0 +1,1 @@
+Local onde será armazenado as informações dos cursos em formato csv
