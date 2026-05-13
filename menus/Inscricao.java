@@ -5,6 +5,7 @@ import entidades.Curso.Curso;
 import entidades.Usuario.Usuario;
 import java.util.ArrayList;
 import java.util.Scanner;
+import utils.Manipulate;
 
 public class Inscricao {
 
@@ -13,15 +14,7 @@ public class Inscricao {
         return codigo != null && codigo.matches("[a-zA-Z0-9]{10}");
     }
 
-    public static int toInt(char c) {
-        if(c >= '0' && c <= '9') {
-            return c - '0';
-        }
-        return -1;
-    }
-
-    public static void menu(Usuario user) throws Exception {
-        Scanner sc = new Scanner(System.in);
+    public static void menu(Usuario user, Scanner sc) throws Exception {
         ArquivoCurso arqCurso = new ArquivoCurso();
 
         int s = 0;
@@ -36,7 +29,7 @@ public class Inscricao {
             
 
             //listar inscrições do usuário
-            Curso[] minhasInscricoes = arqCurso.readCursosUsuario(user.getID());
+            Curso[] minhasInscricoes = arqCurso.readCursosUsuarioAtivo(user.getID());
 
             // se não tiver inscrições
             if (minhasInscricoes.length == 0) {  
@@ -65,6 +58,8 @@ public class Inscricao {
 
             aux = sc.nextLine();
             if (aux.length() == 0) continue;
+
+            int numericOption = Manipulate.toInt(aux);
             opcao = Character.toUpperCase(aux.charAt(0));
 
             // sair
@@ -96,7 +91,7 @@ public class Inscricao {
                 if (c != null) {
                     //chama menu de detalhes do curso
                     
-                    DetalheCurso.menu(c, user);
+                    DetalheCurso.menu(c, user, sc);
                 } else {
                     System.out.println("Curso não encontrado.");
                 }
@@ -122,14 +117,14 @@ public class Inscricao {
                 ArrayList<Curso> lista = arqCurso.readAllOrdenadoPorData();
 
                 //chama o mini menu paginado
-                ListaCursos.menu(lista, user);
+                ListaCursos.menu(lista, user, sc);
 
             // detalhes de um curso específico da lista de inscrições
-            }else if (toInt(opcao) > 0 && toInt(opcao) <= minhasInscricoes.length) {
-                Curso c = minhasInscricoes[toInt(opcao)];
+            }else if (numericOption > 0 && numericOption <= minhasInscricoes.length) {
+                Curso c = minhasInscricoes[numericOption - 1];
                 if(c != null) {
                     //apenas detalhes do curso
-                    DetalheCurso.menu2(c);
+                    DetalheCurso.menu2(c, user, sc);
                 } else {
                     System.out.println("Opção inválida.");
                 }

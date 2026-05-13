@@ -9,6 +9,13 @@
             "name": "Principal",
             "request": "launch",
             "mainClass": "Principal",
+            "projectName": "TP_AEDs_3_9690e5db"
+        },
+        {
+            "type": "java",
+            "name": "Principal",
+            "request": "launch",
+            "mainClass": "Principal",
             "projectName": "TP_AEDs3-main_4437c0fb"
         },
         {

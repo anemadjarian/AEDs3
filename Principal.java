@@ -1,7 +1,6 @@
 import entidades.Usuario.*;
-import menus.Logado;
-
 import java.util.*;
+import menus.Logado;
 
 public class Principal {
     public static void main(String[] args)  throws Exception{
@@ -56,7 +55,7 @@ public class Principal {
 
                 if (u != null) {
                     // próximo menu
-                    Logado.menu(u);
+                    Logado.menu(u, sc);
                 } else {
                     System.out.println("Email ou senha inválidos.");
                 }
@@ -160,6 +159,5 @@ public class Principal {
                 }
             }
         }
-        sc.close();
     }
 }

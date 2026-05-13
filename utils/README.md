@@ -1,0 +1,1 @@
+Pasta contendo códigos potencialmente úteis em todo o contexto da aplicação.

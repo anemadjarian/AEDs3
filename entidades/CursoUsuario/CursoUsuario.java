@@ -1,8 +1,7 @@
 package entidades.CursoUsuario;
 
-import java.time.LocalDate;
-
 import java.io.*;
+import java.time.LocalDate;
 
 public class CursoUsuario {
 
@@ -10,6 +9,7 @@ public class CursoUsuario {
     private int idCurso;
     private int idUsuario;
     private LocalDate dataInscricao;
+    private boolean cancelado; 
 
     public CursoUsuario() {
 
@@ -20,6 +20,7 @@ public class CursoUsuario {
         this.idCurso = idCurso;
         this.idUsuario = idUsuario;
         this.dataInscricao = dataInscricao;
+        this.cancelado = false;
     }
 
     // GETTERS E SETTERS
@@ -51,9 +52,19 @@ public class CursoUsuario {
     public LocalDate getDataInscricao() { 
         return dataInscricao; 
     }
+    
 
     public void setDataInscricao(LocalDate data) { 
         this.dataInscricao = data; 
+    }
+
+    public boolean getCancelado() { 
+        return cancelado; 
+    }
+    
+
+    public void setCancelado(boolean value) { 
+        this.cancelado = value; 
     }
 
     public byte[] toByteArray() throws IOException {
@@ -64,6 +75,7 @@ public class CursoUsuario {
         dos.writeInt(idCurso);
         dos.writeInt(idUsuario);
         dos.writeLong(dataInscricao.toEpochDay());
+        dos.writeBoolean(cancelado);
 
         return baos.toByteArray();
     }
@@ -76,5 +88,6 @@ public class CursoUsuario {
         idCurso = dis.readInt();
         idUsuario = dis.readInt();
         dataInscricao = LocalDate.ofEpochDay(dis.readLong());
+        cancelado = dis.readBoolean();
     }
 }

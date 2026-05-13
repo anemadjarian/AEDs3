@@ -51,9 +51,14 @@ public class ArquivoCurso extends Arquivo<Curso> {
     }
 
     //encontra todos os cursos que um usuario se inscreveu baseado no id
-    public Curso[] readCursosUsuario(int idUsuario) throws Exception {
+    public Curso[] readCursosUsuarioAtivo(int idUsuario) throws Exception {
         ArquivoCursoUsuario arquivoCursoUsuario = new ArquivoCursoUsuario();
-        ArrayList<CursoUsuario> lista = arquivoCursoUsuario.readAllByIdUsuario(idUsuario);
+        ArrayList<CursoUsuario> lista = new ArrayList<>(
+                arquivoCursoUsuario.readAllByIdUsuario(idUsuario)
+                .stream()
+                .filter(cu -> cu.getCancelado() == false)
+                .toList()
+);
 
         Curso[] cursos = new Curso[lista.size()];
 

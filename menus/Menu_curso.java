@@ -18,9 +18,7 @@ public class Menu_curso {
             System.out.println("Não foi possível remover, ja estixtem alunos matribulados na matéria");
         }
     }
-    public static void menu(Usuario user) {
-        Scanner sc = new Scanner(System.in);
-
+    public static void menu(Usuario user, Scanner sc) {
         try {
             ArquivoCurso arqCurso = new ArquivoCurso();
 
@@ -113,6 +111,7 @@ public class Menu_curso {
 
 
                             System.out.println();
+                            System.out.println("(A) Gerenciar inscritos no curso");
                             System.out.println("(B) Corrigir dados do curso");
                             System.out.println("(C) Encerrar inscrições");
                             System.out.println("(D) Concluir curso");
@@ -121,12 +120,14 @@ public class Menu_curso {
                             System.out.println("(R) Retornar");
 
                             System.out.print("Opção: ");
-                            char op2 = Character.toUpperCase(sc.nextLine().charAt(0));
+                            String aux2 = sc.nextLine();
+                            char op2 = Character.toUpperCase(aux2.charAt(0));
 
                             if (op2 == 'R') {
                                 voltar = 1;
+                            } else if (op2 == 'A') {
+                                DetalheInscricaoCurso.menu(c, user, sc);
                             }
-
                             else if (op2 == 'B') {
                                 if(c.getEstado() != 2){
                                     sc.nextLine();
@@ -205,5 +206,6 @@ public class Menu_curso {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
 }

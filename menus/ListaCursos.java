@@ -8,8 +8,7 @@ import java.util.Scanner;
 
 public class ListaCursos {
 
-    public static void menu(ArrayList<Curso> lista, Usuario user) {
-        Scanner sc = new Scanner(System.in);
+    public static void menu(ArrayList<Curso> lista, Usuario user, Scanner sc) {
 
         if (lista == null || lista.isEmpty()) {
             System.out.println("Nenhum curso encontrado.");
@@ -102,7 +101,7 @@ public class ListaCursos {
 
                     // chama o menu de detalhes
                     try {
-                        DetalheCurso.menu(cursoSelecionado, user);
+                        DetalheCurso.menu(cursoSelecionado, user, sc);
                     } catch (Exception e) {
                         System.out.println("Erro ao abrir o curso.");
                         e.printStackTrace();
@@ -114,5 +113,7 @@ public class ListaCursos {
                 System.out.println("Opção inválida.");
             }
         }
+
+
     }
 }

@@ -4,13 +4,11 @@ import entidades.Curso.Curso;
 import entidades.CursoUsuario.ArquivoCursoUsuario;
 import entidades.CursoUsuario.CursoUsuario;
 import entidades.Usuario.Usuario;
-
 import java.util.Scanner;
 
 public class DetalheCurso {
 
-    public static void menu(Curso c, Usuario user) throws Exception {
-        Scanner sc = new Scanner(System.in);
+    public static void menu(Curso c, Usuario user, Scanner sc) throws Exception {
         ArquivoCursoUsuario arquivoCursoUsuario = new ArquivoCursoUsuario();
 
         int s = 0;
@@ -91,12 +89,11 @@ public class DetalheCurso {
     }
 
 
-    public static void menu2(Curso c) throws Exception {
-        Scanner sc = new Scanner(System.in);
-
+    public static void menu2(Curso c, Usuario user, Scanner sc) throws Exception {
         int s = 0;
         String aux = "";
         char opcao;
+        ArquivoCursoUsuario acu = new ArquivoCursoUsuario();
 
         //APENAS PARA VISUALIZAÇÃO DE CURSO, SEM OPÇÃO DE INSCRIÇÃO
         while (s == 0) {
@@ -116,6 +113,8 @@ public class DetalheCurso {
             System.out.println("DATA DE INÍCIO: " + c.getInicio());
             System.out.println();
 
+            System.out.println("(A) Cancelar minha inscrição");
+
             System.out.println("(R) Retornar ao menu anterior");
             System.out.println();
 
@@ -130,6 +129,14 @@ public class DetalheCurso {
             if (opcao == 'R') {
                 s = 1;
                 break;
+            } else if (opcao == 'A') {
+                CursoUsuario cu = acu.readByUsuarioAndCurso(user.getID(), c.getID());
+                if(cu == null) {
+                    throw new Exception("Hey hey, a relação curso e usuario não foi encontrada");
+                }
+                cu.setCancelado(true);
+                acu.update(cu);
+                s=1;
             }else {
                 System.out.println("Opção inválida.");
                 System.out.println("Pressione Enter para continuar...");

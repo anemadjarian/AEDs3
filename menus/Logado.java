@@ -1,12 +1,10 @@
 package menus;
 import entidades.Usuario.ArquivoUsuario;
 import entidades.Usuario.Usuario;
-
 import java.util.Scanner;
 
 public class Logado {
-    public static void menu(Usuario user) throws Exception {
-        Scanner sc = new Scanner(System.in);
+    public static void menu(Usuario user, Scanner sc) throws Exception {
         ArquivoUsuario arqUser = new ArquivoUsuario();
 
         int s = 0;
@@ -63,12 +61,12 @@ public class Logado {
 
             // meus cursos
             else if (opcao == 'B') {
-                Menu_curso.menu(user); // já preparando integração
+                Menu_curso.menu(user, sc); // já preparando integração
             }
 
             // minhas inscrições
             else if (opcao == 'C') {
-                Inscricao.menu(user); //vai para o menu de inscrições
+                Inscricao.menu(user, sc); //vai para o menu de inscrições
             }
 
             else if(opcao == 'D') {

@@ -6,13 +6,17 @@ import java.time.LocalDate;
 import java.util.Random;
 
 public class Curso implements InterfaceEntidade {
-
     private int idCurso;
     private int idUsuario; // relacionamento 1:N
     private String nome;
     private String descricao;
     private LocalDate inicio;
     private String codigo;
+
+    // 0 - Aberto para inscrições
+    // 1 - Inscrições encerradas
+    // 2 - Curso concluido
+    // 3 - Curso cancelado
     private int estado;
 
     public Curso() {
@@ -155,5 +159,4 @@ public class Curso implements InterfaceEntidade {
     public boolean hasAluno(){
         return false;
     }
-
 }

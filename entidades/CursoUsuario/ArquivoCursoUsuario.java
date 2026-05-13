@@ -4,6 +4,8 @@ import aed3.ArvoreBMais;
 import aed3.HashExtensivel;
 import aed3.ParIDEndereco;
 import aed3.ParIdId;
+import entidades.Usuario.ArquivoUsuario;
+import entidades.Usuario.Usuario;
 import java.io.*;
 import java.util.ArrayList;
 
@@ -17,22 +19,22 @@ public class ArquivoCursoUsuario {
     private final int TAM_CABECALHO = 4;
 
     public ArquivoCursoUsuario() throws Exception {
-        arq = new RandomAccessFile("./entidades/CursoUsuario/cursoUsuario.db", "rw");
+        arq = new RandomAccessFile("./dados/cursoUsuario/cursoUsuario.db", "rw"); 
 
         if (arq.length() == 0) {
             arq.writeInt(0); // último ID
         }
 
         idxUsuarioCurso = new ArvoreBMais<>(
-            ParIdId.class.getConstructor(), 4, "./entidades/CursoUsuario/idxUsuarioCurso.db"
+            ParIdId.class.getConstructor(), 4, "./dados/cursoUsuario/idxUsuarioCurso.db"
         );
 
         idxDireto = new HashExtensivel<>(
-            ParIDEndereco.class.getConstructor(), 4, "./entidades/CursoUsuario/idxUsuarioCurso.db", "./entidades/CursoUsuario/idxUsuarioCurso.db"
+            ParIDEndereco.class.getConstructor(), 4, "./dados/cursoUsuario/indiceCursoUsuario.d.db", "./dados/cursoUsuario/indiceCursoUsuario.c.db"
         );
 
         idxCursoUsuario = new ArvoreBMais<>(
-            ParIdId.class.getConstructor(), 4, "./entidades/CursoUsuario/idxUsuarioCurso.db"
+            ParIdId.class.getConstructor(), 4, "./dados/cursoUsuario/idxCursoUsuario.db"
         );
 
         if (idxUsuarioCurso.empty()) {
@@ -135,6 +137,7 @@ public class ArquivoCursoUsuario {
         return listaFinal;
     }
 
+
     //verificar se o usuário já está inscrito no curso
     public boolean isInscrito(int idUsuarioBuscado, int idCursoBuscado) throws Exception {
         ArrayList<CursoUsuario> listaCursosDoUsuario = readAllByIdUsuario(idUsuarioBuscado);
@@ -152,7 +155,7 @@ public class ArquivoCursoUsuario {
 
     public int create(CursoUsuario cu) throws Exception {
 
-         arq.seek(0);
+        arq.seek(0);
         int ultimoID = arq.readInt();
         int novoID = ultimoID + 1;
 
@@ -215,13 +218,71 @@ public class ArquivoCursoUsuario {
         return lista;
     }
 
+    public ArrayList<InscritoInfo> listarInscritos(int idCurso) throws Exception {
+
+    ArrayList<InscritoInfo> lista = new ArrayList<>();
+    ArrayList<CursoUsuario> inscricoes = readAllByIdCurso(idCurso);
+    ArquivoUsuario arqUsuario = new ArquivoUsuario();
+    for (CursoUsuario cu : inscricoes) {
+
+        Usuario usuario = arqUsuario.read(cu.getIdUsuario());
+        if (usuario != null) {
+            lista.add(
+                new InscritoInfo(usuario, cu)
+            );
+        }
+    }
+
+    return lista;
+}   
+
+public CursoUsuario readByUsuarioAndCurso(int idUsuario, int idCurso) throws Exception {
+
+    ArrayList<ParIdId> lista =
+        idxUsuarioCurso.read(new ParIdId(idUsuario, -1));
+
+    for (ParIdId p : lista) {
+        CursoUsuario cu = readById(p.getId2());
+
+        if (cu != null && cu.getIdCurso() == idCurso) {
+            return cu;
+        }
+    }
+
+    return null;
+}
+
+    public boolean update(CursoUsuario cu) throws Exception {
+        ParIDEndereco pie = idxDireto.read(cu.getIdCursoUsuario());
+
+        if(pie == null) {
+            return false;
+        }
+
+        long pos = pie.getEndereco();
+
+        arq.seek(pos);
+
+        byte lapide = arq.readByte();
+        arq.readShort();
+        
+        if(lapide == '*') {
+            return false;
+        }
+
+        arq.write(cu.toByteArray());
+
+        return true;
+    }
+
     //Delete -> cancelar a inscrição
     public boolean delete(int id) throws Exception {
 
         ParIDEndereco pie = idxDireto.read(id);
 
-    if (pie == null)
-        return false;
+        if (pie == null){
+           return false;
+        }
 
         long pos = pie.getEndereco();
 
@@ -255,6 +316,5 @@ public class ArquivoCursoUsuario {
         arq.writeByte('*');
 
         return true;
-
     }
 }
