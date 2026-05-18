@@ -10,6 +10,7 @@ public class Usuario implements InterfaceEntidade {
     private String hashSenha;
     private String perguntaSecreta;
     private String hashRespostaSecreta;
+    private boolean inativo;
     
     public Usuario() {
     }
@@ -21,6 +22,7 @@ public class Usuario implements InterfaceEntidade {
         this.hashSenha = hashSenha;
         this.perguntaSecreta = perguntaSecreta;
         this.hashRespostaSecreta = hashRespostaSecreta;
+        this.inativo = false;
     }
 
     public int getIdUsuario() {
@@ -63,6 +65,14 @@ public class Usuario implements InterfaceEntidade {
         this.perguntaSecreta = perguntaSecreta;
     }
 
+    public void setInativo(boolean value) {
+        this.inativo = value;
+    }
+
+    public boolean getInativo() {
+        return this.inativo;
+    }
+
     public String getHashRespostaSecreta() {
         return hashRespostaSecreta;
     }
@@ -82,7 +92,8 @@ public class Usuario implements InterfaceEntidade {
     @Override
     public String toString() {
         return "Nome: " + nome +
-               "\nEmail: " + email;
+               "\nEmail: " + email +
+               (this.inativo ? "\nInativo" : "\nAtivo");
     }
 
     // hash simples (placeholder)
@@ -101,6 +112,7 @@ public class Usuario implements InterfaceEntidade {
         dos.writeUTF(hashSenha);
         dos.writeUTF(perguntaSecreta);
         dos.writeUTF(hashRespostaSecreta);
+        dos.writeBoolean(inativo);
 
         return ba.toByteArray();
     }
@@ -115,5 +127,6 @@ public class Usuario implements InterfaceEntidade {
         hashSenha = dis.readUTF();
         perguntaSecreta = dis.readUTF();
         hashRespostaSecreta = dis.readUTF();
+        inativo = dis.readBoolean();
     }
 }

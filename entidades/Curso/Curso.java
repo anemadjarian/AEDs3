@@ -31,7 +31,7 @@ public class Curso implements InterfaceEntidade {
         this.codigo = gerarCodigo(); // gera automaticamente
     }
 
-    // 🔹 Geração do código estilo NanoID (10 caracteres)
+    // Geração do código estilo NanoID (10 caracteres)
     public static String gerarCodigo() {
         String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         StringBuilder sb = new StringBuilder();

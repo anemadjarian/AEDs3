@@ -20,7 +20,6 @@ public class Logado {
             System.out.println("(B) Meus cursos");
             System.out.println("(C) Minhas inscrições");
             System.out.println("(D) Deletar conta");
-            System.out.println("(E) Editar informações");
             System.out.println();
             System.out.println("(S) Sair");
             System.out.println();
@@ -50,34 +49,16 @@ public class Logado {
                 System.out.println("----------");
                 System.out.println("> Inicio > Meus Dados");
                 System.out.println();
-
+                System.out.println("(A) Editar informações");
+                System.out.println(user.getInativo() ? "(B) Ativar conta" : "(B) Inativar conta");
                 System.out.println("Meus dados:");
                 System.out.println(user.toString());
                 System.out.println();
 
                 System.out.println("Pressione qualquer tecla para voltar...");
-                sc.nextLine();
-            }
+                char op2 = sc.nextLine().charAt(0);
 
-            // meus cursos
-            else if (opcao == 'B') {
-                Menu_curso.menu(user, sc); // já preparando integração
-            }
-
-            // minhas inscrições
-            else if (opcao == 'C') {
-                Inscricao.menu(user, sc); //vai para o menu de inscrições
-            }
-
-            else if(opcao == 'D') {
-                System.out.println("Tem certeza que deseja deletar sua conta? [S/n]");
-                String resp = sc.nextLine();
-
-                if(resp.toLowerCase().charAt(0) == 's') {
-                    arqUser.delete(user.getID());
-                }
-                s=1;
-            } else if(opcao == 'E') {
+                if(op2 == 'A') {
                 System.out.print("Digite seu nome: "); //NOME
                 user.setNome(sc.nextLine());
 
@@ -123,8 +104,32 @@ public class Logado {
                         arqUser.update(user);
                         System.out.println("Edição realizado com sucesso!");
                 }
+            } else if(op2 == 'B') {
+                user.setInativo(user.getInativo());
+                arqUser.update(user);
+            }  
+            
             }
-            else {
+
+            // meus cursos
+            else if (opcao == 'B') {
+                Menu_curso.menu(user, sc); // já preparando integração
+            }
+
+            // minhas inscrições
+            else if (opcao == 'C') {
+                Inscricao.menu(user, sc); //vai para o menu de inscrições
+            }
+
+            else if(opcao == 'D') {
+                System.out.println("Tem certeza que deseja deletar sua conta? [S/n]");
+                String resp = sc.nextLine();
+
+                if(resp.toLowerCase().charAt(0) == 's') {
+                    arqUser.delete(user.getID());
+                }
+                s=1;
+            } else {
                 System.out.println("Opção Inválida. Deseja tentar novamente? S/N");
                 char desejo = Character.toUpperCase(sc.nextLine().charAt(0));
 

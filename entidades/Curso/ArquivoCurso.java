@@ -2,13 +2,19 @@ package entidades.Curso;
 import aed3.*;
 import entidades.CursoUsuario.ArquivoCursoUsuario;
 import entidades.CursoUsuario.CursoUsuario;
+import entidades.Usuario.ArquivoUsuario;
+import entidades.Usuario.Usuario;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
 
 public class ArquivoCurso extends Arquivo<Curso> {
     private final int TAM_CABECALHO = 4;
-    RandomAccessFile arq;
 
+    private final ArquivoUsuario arqUsuario = new ArquivoUsuario();
+    RandomAccessFile arq;
+    
+    private final ArquivoCursoUsuario arquivoCursoUsuario = new ArquivoCursoUsuario();
+    
     ArvoreBMais<ParIdId> relacionamentoUsuarioCurso;
     ArvoreBMais<ParNomeId> indiceNome;
 
@@ -21,6 +27,13 @@ public class ArquivoCurso extends Arquivo<Curso> {
 
     @Override
     public int create(Curso c) throws Exception {
+        Usuario user = arqUsuario.read(c.getIdUsuario());
+        
+        if(user.getInativo()) {
+            System.out.println("Você precisa estar com uma conta ativada para cadastrar um novo curso");
+            return -1;
+        }
+        
         int id = super.create(c);
         relacionamentoUsuarioCurso.create(new ParIdId(c.getIdUsuario(), id));
         indiceNome.create(new ParNomeId(c.getNome(), id));
@@ -52,7 +65,7 @@ public class ArquivoCurso extends Arquivo<Curso> {
 
     //encontra todos os cursos que um usuario se inscreveu baseado no id
     public Curso[] readCursosUsuarioAtivo(int idUsuario) throws Exception {
-        ArquivoCursoUsuario arquivoCursoUsuario = new ArquivoCursoUsuario();
+       
         ArrayList<CursoUsuario> lista = new ArrayList<>(
                 arquivoCursoUsuario.readAllByIdUsuario(idUsuario)
                 .stream()
@@ -144,6 +157,9 @@ public class ArquivoCurso extends Arquivo<Curso> {
         Curso[] cursos = readCursosPorUsuario(userId);
         for(Curso curso : cursos) {
             delete(curso.getID());
+            relacionamentoUsuarioCurso.delete(new ParIdId(userId, curso.getID()));
+            
+            arquivoCursoUsuario.deleteInscritosPorCurso(curso);
         }
     }
 

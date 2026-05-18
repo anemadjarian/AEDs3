@@ -42,66 +42,7 @@ public class ArquivoUsuario extends Arquivo<Usuario> {
         usuarioEncontrado.setHashRespostaSecreta(null);
     
         return usuarioEncontrado; 
-    } 
-
-    /*public boolean update(Usuario new_user) throws Exception {
-        int var2 = new_user.getID();
-        ParIDEndereco var3 = (ParIDEndereco)this.indiceDireto.read(var2);
-        if (var3 == null) {
-            return false;
-        } else {
-            long var4 = var3.getEndereco();
-            this.arquivo.seek(var4);
-            byte var6 = this.arquivo.readByte();
-            short var7 = this.arquivo.readShort();
-            if (var6 == 32) {
-                byte[] var8 = new byte[var7];
-                this.arquivo.read(var8);
-                InterfaceEntidade var9 = (InterfaceEntidade)this.construtor.newInstance();
-                var9.fromByteArray(var8);
-                if (var9.getID() == var1.getID()) {
-                    byte[] var10 = var1.toByteArray();
-                    short var11 = (short)var10.length;
-                    if (var11 <= var7) {
-                        this.arquivo.seek(var4 + 3L);
-                        this.arquivo.write(var10);
-
-                        for(int var12 = 0; var12 < var7 - var11; ++var12) {
-                            this.arquivo.writeByte(0);
-                        }
-                    } else {
-                        this.arquivo.seek(var4);
-                        this.arquivo.writeByte(42);
-                        this.arquivo.skipBytes(2);
-
-                        for(int var14 = 0; var14 < var7; ++var14) {
-                            this.arquivo.writeByte(0);
-                        }
-                    }
-
-                    this.insereEspacoVazio(var4, var7);
-                    long var15 = this.encontraEspacoVazio(var11);
-                    if (var15 == -1L) {
-                        var15 = this.arquivo.length();
-                        this.arquivo.seek(this.arquivo.length());
-                        this.arquivo.writeByte(32);
-                        this.arquivo.writeShort(var11);
-                    } else {
-                        this.arquivo.seek(var15);
-                        this.arquivo.writeByte(32);
-                        this.arquivo.skipBytes(2);
-                    }
-
-                    this.arquivo.write(var10);
-                    this.indiceDireto.update(new ParIDEndereco(var2, var15));
-                }
-
-                return true;
-            }
-        }
-            
-        return false;
-    }*/
+    }
 
     public Usuario encontrarPorEmailUnsafe(String email) throws Exception {
         ParEmailId pei = indiceEmail.read(Math.abs(email.hashCode()));
@@ -126,7 +67,6 @@ public class ArquivoUsuario extends Arquivo<Usuario> {
 
         return resp;
     }
-
 
     public Usuario login(String email, String senha) throws Exception {
         ParEmailId pei = indiceEmail.read(Math.abs(email.hashCode()));

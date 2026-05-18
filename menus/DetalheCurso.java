@@ -54,25 +54,8 @@ public class DetalheCurso {
             else if (opcao == 'A') {
 
                 //se tiver aceitando inscrições
-                if(c.getEstadoString() == "") {
-
-                    //verificar se já está inscrito
-                    if(arquivoCursoUsuario.isInscrito(user.getID(), c.getIdCurso())) { 
-                        System.out.println("Você já está inscrito neste curso.");
-
-                    // caso contrário, inscrever
-                    } else { 
-                        try {
-                            //Cria um novo curso usuário e salva no arquivo
-                            CursoUsuario cursoUsuario = new CursoUsuario(0, c.getIdCurso(), user.getID(), java.time.LocalDate.now());
-                            arquivoCursoUsuario.create(cursoUsuario);
-                            System.out.println("Inscrição realizada com sucesso!");
-                        } catch (Exception e) {
-                            // TODO: handle exception
-                        }
-                    }
-                    
-                //caso não esteja aceitando inscrições    
+                if(c.getEstadoString().equals("")) {
+                    arquivoCursoUsuario.InscreverEmCurso(user, c);
                 }else{ 
                     System.out.println(c.getEstadoString());
                 }
